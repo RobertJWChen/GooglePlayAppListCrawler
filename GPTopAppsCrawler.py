@@ -4,7 +4,11 @@ A simple tool to get top app list from Google Play (https://play.google.com/stor
 #!/usr/bin/python
 
 import os
-import urllib, urllib2
+import urllib.parse as urllib
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 
 from bs4 import BeautifulSoup
 from Utils import PackageInfo, GooglePalyConstants as CONSTANT
@@ -25,8 +29,9 @@ class TopAppListCrawler:
                   'ipf' : 1,
                   'xhr' : 1}
         data = urllib.urlencode(values)
+        data = data.encode('utf-8')
         req = urllib2.urlopen(
-            urllib2.Request(url, data), timeout= 3
+            urllib2.Request(url, data)
         )
         soup = BeautifulSoup(req.read().decode('utf-8'), 'html.parser')
         packages = soup.find_all("a",class_="title")
